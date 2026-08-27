@@ -1019,21 +1019,43 @@ $("#tab-3d").addEventListener("click", () => setMode("3d"));
 
 /* ---- 3D presets ---- */
 
+// Each preset's parameter hints give amplitude/frequency-style sliders a
+// sensible range out of the box (e.g. a frequency slider that goes too high
+// for the sample grid just looks like noise) rather than the generic -10..10.
 const PRESETS_3D = {
-  paraboloid: "x^2 + y^2",
-  saddle: "x^2 - y^2",
-  monkey: "x^3 - 3xy^2",
-  ripple: "sin(sqrt(x^2 + y^2))",
-  bump: "a*exp(-(x^2 + y^2)/b)",
+  paraboloid: { expr: "x^2 + y^2" },
+  saddle: { expr: "x^2 - y^2" },
+  monkey: { expr: "x^3 - 3xy^2" },
+  ripple: {
+    expr: "a*sin(b*sqrt(x^2 + y^2))",
+    hints: {
+      a: { min: -3, max: 3, step: 0.1, value: 1 },
+      b: { min: 0.2, max: 3, step: 0.1, value: 1 },
+    },
+  },
+  bump: {
+    expr: "a*exp(-(x^2 + y^2)/b)",
+    hints: {
+      a: { min: -5, max: 5, step: 0.1, value: 2 },
+      b: { min: 0.2, max: 8, step: 0.1, value: 1 },
+    },
+  },
 };
 
 $("#presets-3d").addEventListener("click", (e) => {
   const btn = e.target.closest("button[data-preset]");
   if (!btn) return;
-  const expr = PRESETS_3D[btn.dataset.preset];
-  if (!expr) return;
+  const preset = PRESETS_3D[btn.dataset.preset];
+  if (!preset) return;
   graph3d.functions = [];
-  addFunction(expr);
+  addFunction(preset.expr);
+  recomputeParams();
+  for (const [name, hint] of Object.entries(preset.hints || {})) {
+    if (!(name in paramValues)) continue;
+    paramRanges[name] = { min: hint.min, max: hint.max, step: hint.step };
+    paramValues[name] = hint.value;
+  }
+  lastParamSignature = " "; // force the panel to rebuild with the new ranges
   recomputeParams();
   graph3d.recompute();
   graph3d.render();
