@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>GraphIt — Fast Free Graphing Calculator</title>
+<meta name="description" content="A fast, free, zero-dependency graphing calculator. Plot multiple functions, pan, zoom, trace, and share graphs instantly — all in your browser." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <header id="topbar">
+    <div class="brand">
+      <span class="brand-mark">📈</span>
+      <span class="brand-name">GraphIt</span>
+    </div>
+
+    <div class="quickcalc">
+      <input id="quickcalc-input" type="text" inputmode="text" placeholder="Quick calc, e.g. 3*(2+5^2)" autocomplete="off" spellcheck="false" />
+      <button id="quickcalc-eval" title="Evaluate (Enter)">=</button>
+      <span id="quickcalc-result"></span>
+    </div>
+
+    <div class="topbar-actions">
+      <button id="btn-share" class="icon-btn" title="Copy shareable link">🔗</button>
+      <button id="btn-theme" class="icon-btn" title="Toggle theme">🌓</button>
+      <button id="btn-menu" class="icon-btn only-mobile" title="Toggle functions panel">☰</button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <aside id="sidebar">
+      <div class="sidebar-head">
+        <h2>Functions</h2>
+        <button id="btn-add-fn" class="add-btn" title="Add function">+ add</button>
+      </div>
+      <div id="fn-list"></div>
+
+      <div class="keypad" id="keypad">
+        <button data-insert="sin(">sin</button>
+        <button data-insert="cos(">cos</button>
+        <button data-insert="tan(">tan</button>
+        <button data-insert="sqrt(">√</button>
+        <button data-insert="^">x^y</button>
+        <button data-insert="log(">log</button>
+        <button data-insert="ln(">ln</button>
+        <button data-insert="abs(">abs</button>
+        <button data-insert="pi">π</button>
+        <button data-insert="e">e</button>
+        <button data-insert="(">(</button>
+        <button data-insert=")">)</button>
+      </div>
+
+      <div class="sidebar-foot">
+        <div class="hint">Tip: use <code>x</code> as the variable. Implicit multiplication works: <code>2x</code>, <code>2sin(x)</code>.</div>
+      </div>
+    </aside>
+
+    <section id="graph-wrap">
+      <canvas id="graph"></canvas>
+
+      <div id="coord-readout" class="hidden"></div>
+
+      <div id="zoom-controls">
+        <button id="btn-zoom-in" title="Zoom in">+</button>
+        <button id="btn-zoom-out" title="Zoom out">−</button>
+        <button id="btn-reset-view" title="Reset view">⟳</button>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
