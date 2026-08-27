@@ -162,6 +162,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   padding: 12px 14px 8px;
   gap: 8px;
 }
@@ -175,6 +176,7 @@ body {
 
 .mode-tabs {
   display: flex;
+  flex-wrap: wrap;
   background: var(--bg);
   border: 1px solid var(--panel-border);
   border-radius: 8px;
@@ -186,10 +188,11 @@ body {
   background: transparent;
   color: var(--text-dim);
   border-radius: 6px;
-  padding: 5px 12px;
-  font-size: 12.5px;
+  padding: 5px 9px;
+  font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
 }
 .mode-tab.active {
   background: var(--accent);
@@ -340,6 +343,73 @@ body {
 }
 .fn-del:hover { color: var(--danger); background: rgba(229,72,77,0.1); }
 
+/* ---- Parametric curve rows: x(t)= and y(t)= stacked, plus a t-range ---- */
+
+.curve-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+.curve-row.disabled { opacity: 0.45; }
+
+.curve-row-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.curve-label {
+  flex: 1;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.curve-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+.curve-input-row .fn-prefix { font-size: 12px; }
+.curve-input-row .fn-input { font-size: 13px; }
+
+.curve-range-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 2px;
+}
+.curve-range-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+}
+.curve-range-arrow { color: var(--text-dim); font-size: 11px; }
+
+/* ---- 4D info box ---- */
+
+#four-d-info {
+  padding: 4px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#four-d-info p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
 .keypad {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -382,14 +452,14 @@ body {
   background: var(--canvas-bg);
 }
 
-#graph, #graph3d {
+#graph, #graph3d, #graph-param, #graph-4d {
   width: 100%;
   height: 100%;
   display: block;
   touch-action: none;
 }
 #graph { cursor: crosshair; }
-#graph3d { cursor: grab; }
+#graph3d, #graph-param, #graph-4d { cursor: grab; }
 
 #domain-control {
   position: absolute;
@@ -449,6 +519,78 @@ body {
   box-shadow: var(--shadow);
 }
 #zoom-controls button:hover { background: var(--accent); color: var(--accent-text); }
+#btn-topo.active { background: var(--accent); color: var(--accent-text); }
+
+/* ---- Animation bar: shared Play/Pause + scrubber + speed, all modes ---- */
+
+#anim-bar {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  box-shadow: var(--shadow);
+}
+#btn-anim-play {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#btn-anim-play:hover { filter: brightness(1.08); }
+
+#anim-scrub-group {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+#anim-t-slider {
+  flex: 1;
+  min-width: 40px;
+  accent-color: var(--accent);
+}
+#anim-t-readout {
+  font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  min-width: 62px;
+}
+
+.anim-field {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.anim-field input, .anim-field select {
+  border: 1px solid var(--panel-border);
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 5px;
+  padding: 3px 4px;
+  font-size: 12px;
+}
+#anim-max-t { width: 46px; }
 
 /* ---------- Responsive ---------- */
 
@@ -470,4 +612,8 @@ body {
     box-shadow: var(--shadow);
   }
   #sidebar.open { transform: translateX(0); }
+
+  #anim-bar { left: 8px; right: 8px; bottom: 8px; padding: 6px 8px; gap: 6px; }
+  #anim-t-readout { display: none; }
+  .anim-field.for-max-t { display: none; }
 }

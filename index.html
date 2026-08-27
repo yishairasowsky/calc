@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>GraphIt — Fast Free Graphing Calculator</title>
-<meta name="description" content="A fast, free, zero-dependency graphing calculator. Plot 2D and 3D functions, drag sliders to tune parameters live, pan, zoom, orbit, and share graphs instantly — all in your browser." />
+<meta name="description" content="A fast, free, zero-dependency graphing calculator. Plot 2D, 3D, parametric, and 4D shapes, animate time-dependent curves and physics demos, drag sliders to tune parameters live, and share graphs instantly — all in your browser." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>" />
 <link rel="stylesheet" href="styles.css" />
 </head>
@@ -38,6 +38,8 @@
         <div class="mode-tabs" role="tablist">
           <button id="tab-2d" class="mode-tab active" data-mode="2d" role="tab">2D</button>
           <button id="tab-3d" class="mode-tab" data-mode="3d" role="tab">3D</button>
+          <button id="tab-param" class="mode-tab" data-mode="param" role="tab">Curves</button>
+          <button id="tab-4d" class="mode-tab" data-mode="4d" role="tab">4D</button>
         </div>
         <button id="btn-add-fn" class="add-btn" title="Add function">+ add</button>
       </div>
@@ -54,7 +56,23 @@
         <button data-preset="eggcarton">Egg carton</button>
       </div>
 
+      <div id="presets-param" class="presets hidden">
+        <button data-preset="circle">Circle</button>
+        <button data-preset="lissajous">Lissajous</button>
+        <button data-preset="spirograph">Spirograph</button>
+        <button data-preset="rose">Rose curve</button>
+        <button data-preset="astroid">Astroid</button>
+        <button data-preset="heart">Heart curve</button>
+        <button data-preset="projectile">Projectile motion</button>
+        <button data-preset="pendulum">Pendulum</button>
+      </div>
+
       <div id="fn-list"></div>
+
+      <div id="four-d-info" class="hidden">
+        <p>A tesseract is the 4D analog of a cube — 16 corners, 32 edges, each corner joined to 4 neighbors instead of 3.</p>
+        <p>It's rotated through two 4D planes (driven by the time control below), then projected 4D → 3D → your screen, the same way a cube's shadow is a 2D projection of a 3D object.</p>
+      </div>
 
       <div id="params-panel" class="hidden"></div>
 
@@ -72,16 +90,19 @@
         <button data-insert="(">(</button>
         <button data-insert=")">)</button>
         <button data-insert="y">y</button>
+        <button data-insert="t">t</button>
       </div>
 
       <div class="sidebar-foot">
-        <div class="hint" id="hint-text">Tip: use <code>x</code> as the variable. Implicit multiplication works: <code>2x</code>, <code>2sin(x)</code>.</div>
+        <div class="hint" id="hint-text">Tip: use <code>x</code> as the variable. Implicit multiplication works: <code>2x</code>, <code>2sin(x)</code>. Type <code>t</code> for a live, animatable time variable.</div>
       </div>
     </aside>
 
     <section id="graph-wrap">
       <canvas id="graph"></canvas>
       <canvas id="graph3d" class="hidden"></canvas>
+      <canvas id="graph-param" class="hidden"></canvas>
+      <canvas id="graph-4d" class="hidden"></canvas>
 
       <div id="coord-readout" class="hidden"></div>
 
@@ -90,9 +111,28 @@
       </div>
 
       <div id="zoom-controls">
+        <button id="btn-topo" class="hidden" title="Toggle topographic elevation view">🗺️</button>
         <button id="btn-zoom-in" title="Zoom in">+</button>
         <button id="btn-zoom-out" title="Zoom out">−</button>
         <button id="btn-reset-view" title="Reset view">⟳</button>
+      </div>
+
+      <div id="anim-bar" class="hidden">
+        <button id="btn-anim-play" title="Play">▶</button>
+        <div id="anim-scrub-group">
+          <input id="anim-t-slider" type="range" min="0" max="20" step="0.05" value="0" />
+          <span id="anim-t-readout">t = 0</span>
+          <label class="anim-field for-max-t">max <input id="anim-max-t" type="number" min="1" step="1" value="20" /></label>
+        </div>
+        <label class="anim-field">speed
+          <select id="anim-speed">
+            <option value="0.25">0.25×</option>
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+            <option value="4">4×</option>
+          </select>
+        </label>
       </div>
     </section>
 
